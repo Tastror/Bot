@@ -10,7 +10,7 @@ from nonebot.params import T_State
 from .bililogger import bililogger
 from .data_source import get_abv_data
 
-reg = "[Aa][Vv]\d{1,12}|[Bb][Vv]1[A-Za-z0-9]{2}4.1.7[A-Za-z0-9]{2}|[Bb]23\.[Tt][Vv]/[A-Za-z0-9]{7}"
+reg = "[Aa][Vv]\d{1,12}|[Bb][Vv][A-Za-z0-9]{10}|[Bb]23\.[Tt][Vv]/[A-Za-z0-9]{7}"
 biliav = on_regex(reg)
 
 @biliav.handle()

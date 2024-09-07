@@ -18,7 +18,8 @@ HEADER = {
 async def b23tv2bv(b23tv: str) -> str:
     async with httpx.AsyncClient(timeout=10) as client:
         r = await client.get('https://' + b23tv, headers=HEADER)
-    s = re.findall("[Bb][Vv]1[A-Za-z0-9]{2}4.1.7[A-Za-z0-9]{2}", str(r.next_request.url)) 
+    bililogger.debug(f"{r.url} => {r.next_request.url}")
+    s = re.findall("[Bb][Vv][A-Za-z0-9]{10}", str(r.next_request.url)) 
     if len(s) < 1:
         return None
     return s[0]
