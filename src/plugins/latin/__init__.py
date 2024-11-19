@@ -93,7 +93,7 @@ def sentence_change(sentence_input, char_type):
             sentence_output += i
     return sentence_output
 
-latin_reg = r"^latin[:：，,\s]*([\S]*)[:：，,\s]*(.*)$"
+latin_reg = r"^latin[:：，,\s]*([\S]+)[:：，,\s]*([\S]+.*)$"
 latin_catcher = on_regex(latin_reg)
 
 @latin_catcher.handle()
