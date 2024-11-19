@@ -3,6 +3,7 @@ from nonebot.log import logger
 from nonebot.rule import startswith
 from nonebot import on_message, on_regex
 from nonebot.adapters.onebot.v11 import Bot, Event, Message, MessageSegment
+from nonebot_plugin_hammer_core.util.message_factory import reply_text
 
 from .latinlogger import latinlogger
 
@@ -110,11 +111,11 @@ async def _(bot: Bot, event: Event):
     sentence_input = regexplist[1].strip()
 
     if char_type not in char_combine_dict:
-        await latin_catcher.send("输入类型有误，请使用 man latin 查看帮助")
+        await latin_catcher.send(reply_text("输入类型有误，请使用 man latin 查看帮助", event))
         await latin_catcher.finish()
 
     res = sentence_change(sentence_input, char_type)
     latinlogger.info(event.get_log_string() + "\n" + res)
-    await latin_catcher.send(sentence_change(sentence_input, char_type))
+    await latin_catcher.send(reply_text(res, event))
     await latin_catcher.finish()
 
