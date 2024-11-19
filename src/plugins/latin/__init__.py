@@ -113,6 +113,8 @@ async def _(bot: Bot, event: Event):
         await latin_catcher.send("输入类型有误，请使用 man latin 查看帮助")
         await latin_catcher.finish()
 
+    res = sentence_change(sentence_input, char_type)
+    latinlogger.info(event.get_log_string() + "\n" + res)
     await latin_catcher.send(sentence_change(sentence_input, char_type))
     await latin_catcher.finish()
 
