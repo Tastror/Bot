@@ -48,7 +48,10 @@ async def _(bot: Bot, event: MessageEvent):
 
     group_or_user_dict = { "group": group_id, "user": user_id }
 
-    content = re.findall('^(?:[hH]elp|帮助|man)[:：，,\s]*([\S]*)', raw_msg)[0]
+    content = re.findall('^(?:[hH]elp|帮助|[mM]an)[:：，,\s]+([\S]*)', raw_msg)
+    if content is None or len(content) == 0:
+        await help_matcher.finish()
+    content = content[0]
 
     if not content:
         # 单独使用 man 是不行的
