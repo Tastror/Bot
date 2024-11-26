@@ -14,3 +14,10 @@ See [Docs](https://v2.nonebot.dev/)
 本 repo 仅供同步使用
 
 若要 clone 运行，注意 .env.dev 需要手动补全；\*.yaml 和 dataset/ 文件夹并未跟踪，部分功能可能无法使用。
+
+若要添加内容，需要先简单熟悉的几个模块
+
+- authority_help
+- config
+- help
+- empty_module (一个示例模块)
