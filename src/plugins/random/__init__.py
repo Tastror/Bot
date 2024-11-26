@@ -64,7 +64,7 @@ async def _(bot: Bot, event: MessageEvent):
     user_id = event.get_user_id()
 
     content_list = list(
-        re.findall(random_matcher, raw_msg)
+        re.findall(random_reg, raw_msg)
     )
     if len(content_list) == 0:
         await random_matcher.finish()
