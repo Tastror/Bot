@@ -48,22 +48,24 @@ async def _(bot: Bot, event: MessageEvent):
 
     group_or_user_dict = { "group": group_id, "user": user_id }
 
-    content = re.findall('^(?:[hH]elp|帮助|[mM]an)[:：，,\s]+([\S]*)', raw_msg)
-    if content is None or len(content) == 0:
-        await help_matcher.finish()
-    content = content[0]
+    content = re.findall('^(?:[hH]elp|帮助|[mM]an)[:：，,\s]+([\S]*)$', raw_msg)
 
-    if not content:
-        # 单独使用 man 是不行的
-        if 'man' in raw_msg:
+    if content is None or len(content) == 0:
+        content = re.findall('^(?:[hH]elp|帮助)$', raw_msg)
+        if content is None or len(content) == 0:
             await help_matcher.finish()
-            return
         msg = '可用的命令有\n\n'
         for plugin_id, plugin_name in normal_plugins.items():
             msg += '(' + str(plugin_id) + ")\t" + plugin_name + "\t" \
                 + ("已开启" if normal_plugins.accessible(group_or_user_dict, plugin_name)[0] else "已关闭") + "\n"
         msg += '\n使用 `man [名称]` 获取各个命令的详细帮助'
         msg += '\n作者可使用 `config-modify` 直接控制开关'
+        await help_matcher.send(msg)
+        await help_matcher.finish()
+
+    content = content[0]
+
+    if not content:
         await help_matcher.send(msg)
 
     elif is_number(content):
