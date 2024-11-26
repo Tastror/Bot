@@ -9,11 +9,11 @@ echo_matcher = on_message(rule=startswith("echo"))
 async def _(bot: Bot, event: MessageEvent):
 
     event_dict = event.dict()
+    raw_msg = event_dict['raw_message']
     group_id = event_dict.get('group_id', None)
     user_id = event.get_user_id()
-    raw_msg = event_dict['raw_message']
 
-    content = re.findall('^echo[:：，,\s]*([\S\s]*)', raw_msg)
+    content = re.findall(r'^echo[:：，,\s]*([\S\s]*)', raw_msg)
     if content:
         await echo_matcher.send(
             MessageSegment.at(event.dict()['user_id']) +

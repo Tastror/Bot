@@ -7,7 +7,7 @@ from nonebot.message import run_preprocessor
 from nonebot.exception import IgnoredException
 from nonebot.permission import SUPERUSER, SuperUser
 from nonebot.plugin import on_shell_command, get_loaded_plugins
-from nonebot.adapters.onebot.v11 import Bot, Event, MessageEvent
+from nonebot.adapters.onebot.v11 import Bot, Event, MessageEvent, unescape
 from nonebot.adapters.onebot.v11.permission import GROUP_ADMIN, GROUP_OWNER
 
 from .util import parse
@@ -29,7 +29,6 @@ async def _(matcher: Matcher, bot: Bot, event: Event):
     event_dict = event.dict()
     group_id = event_dict.get('group_id', None)
     user_id = event.get_user_id()
-    # raw_msg = event_dict['raw_message']
 
     group_or_user_dict = { "group": group_id, "user": user_id }
 
@@ -71,9 +70,9 @@ authority_locker = on_message(
 async def _(bot: Bot, event: MessageEvent):
 
     event_dict = event.dict()
+    raw_msg = unescape(event_dict['raw_message'])
     group_id = event_dict.get('group_id', None)
     user_id = event.get_user_id()
-    raw_msg = event_dict["raw_message"]
 
     group_or_user_dict = { "group": group_id, "user": user_id }
 

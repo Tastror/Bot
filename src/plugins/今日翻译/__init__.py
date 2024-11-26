@@ -7,7 +7,7 @@ from nonebot.adapters.onebot.v11 import Bot, Event
 
 from .capture_context import get_random
 
-reg = "^(?:#今日翻译)[:：，,\s]*([\S]*)[\s]*$"
+reg = r"^(?:#今日翻译)[:：，,\s]*([\S]*)[\s]*$"
 your_plugin_catcher = on_regex(reg)
 
 today_dict = {}

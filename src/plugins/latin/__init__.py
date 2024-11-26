@@ -2,10 +2,11 @@ import re
 from nonebot.log import logger
 from nonebot.rule import startswith
 from nonebot import on_message, on_regex
-from nonebot.adapters.onebot.v11 import Bot, Event, Message, MessageSegment, unescape
+from nonebot.adapters.onebot.v11 import Bot, Event, MessageEvent, unescape
 from nonebot_plugin_hammer_core.util.message_factory import reply_text
 
 from .latinlogger import latinlogger
+
 
 normal_list = [
     'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz',
@@ -101,14 +102,16 @@ latin_catcher = on_regex(latin_reg)
 async def _(bot: Bot, event: Event):
 
     event_dict = event.dict()
-    raw_msg = event_dict['raw_message']
-    raw_msg = unescape(raw_msg)
-    # group_id = event_dict.get('group_id', None)
-    # user_id = event.get_user_id()
+    raw_msg = unescape(event_dict['raw_message'])
+    group_id = event_dict.get('group_id', None)
+    user_id = event.get_user_id()
 
-    regexplist: list[str] = re.findall(latin_reg, raw_msg)[0]
-    char_type = regexplist[0].strip()
-    sentence_input = regexplist[1].strip()
+    reg_find_list: list[tuple | str] = re.findall(latin_reg, raw_msg)
+    if not reg_find_list or len(reg_find_list) == 0:
+        await latin_catcher.finish()
+    first_find_data: tuple | str = reg_find_list[0]
+    char_type = first_find_data[0].strip()
+    sentence_input = first_find_data[1].strip()
 
     if char_type not in char_combine_dict:
         await latin_catcher.send(reply_text("输入类型有误，请使用 man latin 查看帮助", event))

@@ -1,15 +1,17 @@
 import re
 import random
-
-from nonebot import on_message, on_regex
+from nonebot.log import logger
 from nonebot.rule import startswith
-from nonebot.adapters.onebot.v11 import Bot, MessageEvent, Message
+from nonebot import on_message, on_regex
+from nonebot.adapters.onebot.v11 import Bot, Event, MessageEvent, unescape
 from nonebot_plugin_hammer_core.util.message_factory import reply_text
 
-random_matcher = on_regex(
-    "^(?:random|ran|随机数|随机)[:：，,\s]*(-?[\d]*)[:：，,\s]*(-?[\d]*)[\s]*$"
-)
-dies_matcher = on_regex("^[rR]?([\d]*)[dD]([\d]+)[\s]*$")
+
+random_reg = r"^(?:random|ran|随机数|随机)[:：，,\s]*(-?[\d]*)[:：，,\s]*(-?[\d]*)[\s]*$"
+dies_reg = r"^[rR]?([\d]*)[dD]([\d]+)[\s]*$"
+
+random_matcher = on_regex(random_reg)
+dies_matcher = on_regex(dies_reg)
 
 
 # 跑团专用
@@ -17,11 +19,11 @@ dies_matcher = on_regex("^[rR]?([\d]*)[dD]([\d]+)[\s]*$")
 async def _(bot: Bot, event: MessageEvent):
 
     event_dict = event.dict()
+    raw_msg = unescape(event_dict['raw_message'])
     group_id = event_dict.get('group_id', None)
     user_id = event.get_user_id()
-    raw_msg = event_dict['raw_message']
 
-    content_list = list(re.findall("^[rR]?([\d]*)[dD]([\d]+)[\s]*$", raw_msg))
+    content_list = list(re.findall(dies_reg, raw_msg))
     if len(content_list) == 0:
         await dies_matcher.finish()
         return
@@ -57,14 +59,12 @@ async def _(bot: Bot, event: MessageEvent):
 async def _(bot: Bot, event: MessageEvent):
 
     event_dict = event.dict()
+    raw_msg = unescape(event_dict['raw_message'])
     group_id = event_dict.get('group_id', None)
     user_id = event.get_user_id()
-    raw_msg = event_dict['raw_message']
 
     content_list = list(
-        re.findall(
-            "^(?:random|ran|随机数|随机)[:：，,\s]*(-?[\d]*)[:：，,\s]*(-?[\d]*)[\s]*$", raw_msg
-        )
+        re.findall(random_matcher, raw_msg)
     )
     if len(content_list) == 0:
         await random_matcher.finish()

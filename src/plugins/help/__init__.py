@@ -1,7 +1,10 @@
 import re
-from nonebot import on_message
+from nonebot.log import logger
 from nonebot.rule import startswith
-from nonebot.adapters.onebot.v11 import Bot, MessageEvent
+from nonebot import on_message, on_regex
+from nonebot.adapters.onebot.v11 import Bot, Event, MessageEvent, unescape
+from nonebot_plugin_hammer_core.util.message_factory import reply_text
+
 
 from ..config.plugin_config import normal_plugins
 
@@ -42,13 +45,13 @@ def show_readme(plugin_name: str) -> str:
 async def _(bot: Bot, event: MessageEvent):
 
     event_dict = event.dict()
+    raw_msg = unescape(event_dict['raw_message'])
     group_id = event_dict.get('group_id', None)
     user_id = event.get_user_id()
-    raw_msg = event_dict['raw_message']
 
     group_or_user_dict = { "group": group_id, "user": user_id }
 
-    content = re.findall('^(?:[hH]elp|帮助|[mM]an)[:：，,\s]+([\S]*)$', raw_msg)
+    content = re.findall(r'^(?:[hH]elp|帮助|[mM]an)[:：，,\s]+([\S]*)', raw_msg)
 
     if content is None or len(content) == 0:
         content = re.findall('^(?:[hH]elp|帮助)$', raw_msg)

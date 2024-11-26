@@ -19,7 +19,7 @@ def get_last_month_date():
     last_month_date = today - relativedelta(months=1)
     return last_month_date
 
-reg = r"^gpt(s|c|h|g)?[ \t]*(?:\r?\n((?:.|\s)*?))?$"
+reg = r"^gpt(s|c|h|g)?[ \t]*(?:\r?\n([\s\S]*))?$"
 gpt_catcher = on_regex(reg)
 
 with open("./src/plugins/chatgpt/gpt.yaml", 'r', encoding='utf-8') as file:
@@ -31,10 +31,10 @@ history = dict()
 async def _(bot: Bot, event: Event):
 
     event_dict = event.dict()
+    raw_msg = unescape(event_dict['raw_message'])
     group_id = event_dict.get('group_id', None)
     user_id = event.get_user_id()
-    raw_msg = event_dict['raw_message']
-    raw_msg = unescape(raw_msg)
+
     guid = ("g" + str(group_id)) if group_id is not None else ("u" + user_id)
 
     name_prefix = ("(message from qq=" + user_id + "): ") if group_id is not None else ""
@@ -43,22 +43,26 @@ async def _(bot: Bot, event: Event):
 
     history.setdefault(guid, '')
 
-    content_list = re.findall(reg, raw_msg)[0]
-    content = content_list[1].strip()
+    reg_find_list: list[tuple | str] = re.findall(reg, raw_msg)
+    if not reg_find_list or len(reg_find_list) == 0:
+        await gpt_catcher.finish()
+    first_find_data: tuple | str = reg_find_list[0]
+    mode: str = first_find_data[0].strip()  # >= 2
+    content: str = first_find_data[1].strip()  # >= 2
 
-    gptlogger.info("get message\n" + event.get_log_string() + "\nmethod (s|c|h|nothing): " + content_list[0])
+    gptlogger.info("get message\n" + event.get_log_string() + "\nmethod (s|c|h|nothing): " + mode)
 
-    if content_list[0] == "h":
+    if mode == "h":
         await gpt_catcher.send("gpth: 显示帮助\ngpt<换行>内容: 不使用历史记录\ngpts<换行>内容: 使用历史记录\ngptc<换行>内容: 清空历史且不使用历史记录\ngptg: 显示本群用量")
 
-    if content_list[0] == "g" and group_id is not None:
+    if mode == "g" and group_id is not None:
         res1 = get_status(datetime.today().strftime('%Y-%m'), str(group_id))
         res2 = get_status(get_last_month_date().strftime('%Y-%m'), str(group_id))
         await gpt_catcher.send(f"本月用量: {res1}\n上月用量: {res2}")
 
     if content == "":
 
-        if content_list[0] == "c":
+        if mode == "c":
             history[guid] = ''
             await gpt_catcher.send("历史记录已清除")
 
@@ -69,15 +73,15 @@ async def _(bot: Bot, event: Event):
 
     else:
 
-        if content_list[0] == "c":
+        if mode == "c":
             history_used = False
             history[guid] = ''
             history_prefix = "(历史记录已清除)\n"
 
-        elif content_list[0] == "s":
+        elif mode == "s":
             history_used = True
 
-        elif content_list[0] == "":
+        elif mode == "":
             history_used = False
             history_prefix = "(本次无历史)\n"
 
