@@ -131,7 +131,7 @@ async def _(bot: Bot, event: MessageEvent):
 # 可设置为 default, open(true), close(false)
 # 可在任何场合设置任意群和任意用户
 
-config_modify_order = "config-modify"
+config_modify_order = "conf"
 
 config_modify_matcher = on_message(
     rule=startswith(config_modify_order), permission=SUPERUSER
@@ -156,20 +156,20 @@ async def _(bot: Bot, event: MessageEvent):
     logger.debug(f"{msg}")
 
     help_message = (
-        "CONFIG-MODIFY MANUAL\n"
-        "help\n"
-        "\tconfig-modify [h(elp)]\n"
-        "search\n"
-        "\tconfig-modify s(earch)\n"
-        "\tconfig-modify s(earch) a(ll)|u(ser)|g(roup)\n"
-        "\tconfig-modify s(earch) u(ser)|g(roup) <id> [u(ser)|g(roup) <id> ...]\n"
-        "update\n"
-        "\tconfig-modify u(pdate) [u(ser)|g(roup) <id>] o(pen)|c(lose)|d(efault) a(ll) [h(idden)]\n"
-        "\tconfig-modify u(pdate) [u(ser)|g(roup) <id>] o(pen)|c(lose)|d(efault) <plugin_name>|<plugin_id> [<plugin_name>|<plugin_id> ...]"
+        f"CONFIG-MODIFY MANUAL\n"
+        f"help\n"
+        f"\t{config_modify_order} [h(elp)]\n"
+        f"search\n"
+        f"\t{config_modify_order} s(earch)\n"
+        f"\t{config_modify_order} s(earch) a(ll)|u(ser)|g(roup)\n"
+        f"\t{config_modify_order} s(earch) u(ser)|g(roup) <id> [u(ser)|g(roup) <id> ...]\n"
+        f"update\n"
+        f"\t{config_modify_order} u(pdate) [u(ser)|g(roup) <id>] o(pen)|c(lose)|d(efault) a(ll) [h(idden)]\n"
+        f"\t{config_modify_order} u(pdate) [u(ser)|g(roup) <id>] o(pen)|c(lose)|d(efault) <plugin_name>|<plugin_id> [<plugin_name>|<plugin_id> ...]"
     )
 
-    not_find_message = r"config-modify 中没有 {} 选项，请参见 `config-modify help`"
-    wrong_message = r"config-modify 中 {} 的使用有误，请参见 `config-modify help`"
+    not_find_message = rf"{config_modify_order} 中没有 {{}} 选项，请参见 `{config_modify_order} help`"
+    wrong_message = rf"{config_modify_order} 中 {{}} 的使用有误，请参见 `{config_modify_order} help`"
 
 
     def with_first_letter(*input: str):
@@ -200,7 +200,7 @@ async def _(bot: Bot, event: MessageEvent):
             return "设为默认"
 
 
-    # config-modify [h(elp)]
+    # {config_modify_order} [h(elp)]
 
     if len(args) == 0:
         await config_modify_matcher.send(help_message)
@@ -211,9 +211,9 @@ async def _(bot: Bot, event: MessageEvent):
         await config_modify_matcher.finish()
 
     
-    # config-modify s(earch)
-    # config-modify s(earch) a(ll)|u(ser)|g(roup)
-    # config-modify s(earch) u(ser)|g(roup) <id> [u(ser)|g(roup) <id> ...]
+    # {config_modify_order} s(earch)
+    # {config_modify_order} s(earch) a(ll)|u(ser)|g(roup)
+    # {config_modify_order} s(earch) u(ser)|g(roup) <id> [u(ser)|g(roup) <id> ...]
 
     elif args[0] in with_first_letter("search"):
 
@@ -251,8 +251,8 @@ async def _(bot: Bot, event: MessageEvent):
             await config_modify_matcher.finish()
 
 
-    # config-modify u(pdate) [u(ser)|g(roup) <id>] o(pen)|c(lose)|d(efault) a(ll) [h(idden)]
-    # config-modify u(pdate) [u(ser)|g(roup) <id>] o(pen)|c(lose)|d(efault) <plugin_name>|<plugin_id> [<plugin_name>|<plugin_id> ...]
+    # {config_modify_order} u(pdate) [u(ser)|g(roup) <id>] o(pen)|c(lose)|d(efault) a(ll) [h(idden)]
+    # {config_modify_order} u(pdate) [u(ser)|g(roup) <id>] o(pen)|c(lose)|d(efault) <plugin_name>|<plugin_id> [<plugin_name>|<plugin_id> ...]
 
     elif args[0] in with_first_letter("update"):
 

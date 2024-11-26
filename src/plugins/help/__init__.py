@@ -59,7 +59,6 @@ async def _(bot: Bot, event: MessageEvent):
             msg += '(' + str(plugin_id) + ")\t" + plugin_name + "\t" \
                 + ("已开启" if normal_plugins.accessible(group_or_user_dict, plugin_name)[0] else "已关闭") + "\n"
         msg += '\n使用 `man [名称]` 获取各个命令的详细帮助'
-        msg += '\n作者可使用 `config-modify` 直接控制开关'
         await help_matcher.send(msg)
         await help_matcher.finish()
 
