@@ -8,7 +8,7 @@ from nonebot_plugin_hammer_core.util.message_factory import reply_text
 
 # your_plugin_catcher = on_message(rule=startswith(("开头内容", "开头另一")))
 
-reg = r"^(?:开头内容)[:：，,\s]*([\S]*)[:：，,\s]*([\S]*)[\s]*"  # 例：0/1/2个参数, 可无分割符, 不允许空行
+reg = r"^(?:开头内容)[:：，,\s]*([\S]*)[:：，,\s]*([\S]*)"  # 例：0/1/2个参数, 可无分割符, 不允许空行
 reg = r"^(?:开头内容)[:：，,\s]+([\S\s]+)$"  # 例：1个参数, 有分割符, 参数允许空行
 reg = r"^(?:开头内容)[:：，,\s]+([\S]+)[:：，,\s]+([\S\s]+)$"  # 例：2个参数, 有分割符, 第二个参数允许空行
 your_plugin_catcher = on_regex(reg)
