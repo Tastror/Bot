@@ -2,7 +2,7 @@ import re
 import asyncio
 
 from nonebot.log import logger
-from nonebot.adapters.onebot.v11 import Bot, Event
+from nonebot.adapters.onebot.v11 import Bot, Event, unescape
 from nonebot import get_driver, on_regex
 from nonebot.typing import T_State
 from nonebot.params import T_State
@@ -22,6 +22,7 @@ async def handle(bot: Bot, event: Event, state: T_State):
     # raw_msg = event_dict['raw_message']
 
     raw_msg = event.get_plaintext()
+    raw_msg = unescape(raw_msg)
 
     abvcode_list: list[str] = re.compile(reg).findall(raw_msg)
     if not abvcode_list:

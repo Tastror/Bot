@@ -13,7 +13,7 @@ async def _(bot: Bot, event: MessageEvent):
     user_id = event.get_user_id()
     raw_msg = event_dict['raw_message']
 
-    content = re.findall('^echo[:：，,\s]*(.*)', raw_msg)
+    content = re.findall('^echo[:：，,\s]*([\S\s]*)', raw_msg)
     if content:
         await echo_matcher.send(
             MessageSegment.at(event.dict()['user_id']) +

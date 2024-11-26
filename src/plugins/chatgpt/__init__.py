@@ -6,7 +6,7 @@ from openai import AsyncOpenAI
 from nonebot.log import logger
 from nonebot.rule import startswith
 from nonebot import on_message, on_regex
-from nonebot.adapters.onebot.v11 import Bot, Event
+from nonebot.adapters.onebot.v11 import Bot, Event, unescape
 from nonebot_plugin_hammer_core.util.message_factory import reply_text
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
@@ -34,6 +34,7 @@ async def _(bot: Bot, event: Event):
     group_id = event_dict.get('group_id', None)
     user_id = event.get_user_id()
     raw_msg = event_dict['raw_message']
+    raw_msg = unescape(raw_msg)
     guid = ("g" + str(group_id)) if group_id is not None else ("u" + user_id)
 
     name_prefix = ("(message from qq=" + user_id + "): ") if group_id is not None else ""

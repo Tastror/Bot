@@ -2,7 +2,7 @@ import re
 from nonebot.log import logger
 from nonebot.rule import startswith
 from nonebot import on_message, on_regex
-from nonebot.adapters.onebot.v11 import Bot, Event
+from nonebot.adapters.onebot.v11 import Bot, Event, unescape
 from nonebot_plugin_hammer_core.util.message_factory import reply_text
 
 from .codelogger import codelogger
@@ -19,13 +19,12 @@ async def _(bot: Bot, event: Event):
     # user_id = event.get_user_id()
     # raw_msg = event_dict['raw_message']
 
-    raw_msg = str(event.get_message())
+    raw_msg = unescape(str(event.get_message()))
 
     codelogger.info("get message\n" + event.get_log_string())
     regexplist: list[str] = re.findall(regex_str, raw_msg)[0]
     language: str = regexplist[0]
     content: str = regexplist[1]
-    content = content.replace('&#91;', '[').replace('&#93;', ']').replace('&amp;', '&')
 
     if language in ["python", "py"]:
         from .pyrun import run_content_in_docker

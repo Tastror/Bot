@@ -2,7 +2,7 @@ import re
 from nonebot.log import logger
 from nonebot.rule import startswith
 from nonebot import on_message, on_regex
-from nonebot.adapters.onebot.v11 import Bot, Event, Message, MessageSegment
+from nonebot.adapters.onebot.v11 import Bot, Event, Message, MessageSegment, unescape
 from nonebot_plugin_hammer_core.util.message_factory import reply_text
 
 from .latinlogger import latinlogger
@@ -94,18 +94,18 @@ def sentence_change(sentence_input, char_type):
             sentence_output += i
     return sentence_output
 
-latin_reg = r"^latin[:：，,\s]*([\S]+)[:：，,\s]*([\S]+.*)$"
+latin_reg = r"^latin[:：，,\s]*([\S]+)[:：，,\s]*([\S\s]+)$"
 latin_catcher = on_regex(latin_reg)
 
 @latin_catcher.handle()
 async def _(bot: Bot, event: Event):
 
-    # event_dict = event.dict()
+    event_dict = event.dict()
+    raw_msg = event_dict['raw_message']
+    raw_msg = unescape(raw_msg)
     # group_id = event_dict.get('group_id', None)
     # user_id = event.get_user_id()
-    # raw_msg = event_dict['raw_message']
 
-    raw_msg = str(event.get_message())
     regexplist: list[str] = re.findall(latin_reg, raw_msg)[0]
     char_type = regexplist[0].strip()
     sentence_input = regexplist[1].strip()
