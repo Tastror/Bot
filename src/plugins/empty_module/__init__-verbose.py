@@ -6,6 +6,7 @@ from nonebot.adapters.onebot.v11 import Bot, Event, MessageEvent, unescape
 from nonebot_plugin_hammer_core.util.message_factory import reply_text
 
 # https://onebot.adapters.nonebot.dev/docs/api/v11/event/
+# https://github.com/botuniverse/onebot-11/blob/master/event/message.md
 
 # your_plugin_catcher = on_message(rule=startswith(("开头内容", "开头另一")))
 
