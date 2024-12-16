@@ -101,10 +101,9 @@ latin_catcher = on_regex(latin_reg)
 @latin_catcher.handle()
 async def _(bot: Bot, event: Event):
 
-    event_dict = event.dict()
-    raw_msg = unescape(event_dict['raw_message'])
-    group_id = event_dict.get('group_id', None)
-    user_id = event.get_user_id()
+    raw_msg: str = unescape(event.raw_message)
+    user_id: int = event.user_id
+    group_id: int | None = event.dict().get('group_id', None)
 
     reg_find_list: list[tuple | str] = re.findall(latin_reg, raw_msg)
     if not reg_find_list or len(reg_find_list) == 0:

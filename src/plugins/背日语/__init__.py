@@ -12,7 +12,7 @@ from collections import defaultdict
 from nonebot import on_command, on_message
 from nonebot.rule import Rule
 from nonebot.typing import T_State
-from nonebot.adapters.onebot.v11 import Bot, GroupMessageEvent
+from nonebot.adapters.onebot.v11 import Bot, GroupMessageEvent, unescape
 from nonebot_plugin_hammer_core.util.message_factory import reply_text
 
 
@@ -167,10 +167,9 @@ TA = defaultdict(TimerAns)  # 0
 async def _(bot: Bot, event: GroupMessageEvent, state: T_State):
     global is_testing_hyou, now_index, word, start, word_list
 
-    event_dict = event.dict()
-    group_id = event_dict.get('group_id', None)
-    user_id = event.get_user_id()
-    raw_msg = event_dict['raw_message']
+    # raw_msg: str = unescape(event.raw_message)
+    # user_id: int = event.user_id
+    group_id: int | None = event.dict().get('group_id', None)
 
     is_testing_hyou[group_id] = False
     await Nihongo_catcher.send(
@@ -182,16 +181,15 @@ async def _(bot: Bot, event: GroupMessageEvent, state: T_State):
 async def get_setu(bot: Bot, event: GroupMessageEvent, state: T_State):
     global is_testing_hyou, now_index, word, start, word_list
 
-    event_dict = event.dict()
-    group_id = event_dict.get('group_id', None)
-    user_id = event.get_user_id()
-    raw_msg = event_dict['raw_message']
+    raw_msg: str = unescape(event.raw_message)
+    user_id: int = event.user_id
+    group_id: int | None = event.dict().get('group_id', None)
 
-    id = int(event_dict["raw_message"].strip())
+    id = int(raw_msg.strip())
     if 1 <= id <= 4:
         get(id - 1, group_id)
         is_testing_hyou[group_id] = True
-        this_group_id = event_dict.get("group_id", 0)
+        this_group_id = group_id
         now_index[group_id] = 0
         await Nihongo_catcher.send(
             reply_text("共" + str(len(word_list[group_id])) + "个词汇，即将随机出题", event)
@@ -243,19 +241,18 @@ ans_catcher = on_message(rule=Rule(is_ans), priority=1)
 async def ans_handle(bot: Bot, event: GroupMessageEvent, state: T_State):
     global is_testing_hyou, now_index, word, start, word_list
 
-    event_dict = event.dict()
-    group_id = event_dict.get('group_id', None)
-    user_id = event.get_user_id()
-    raw_msg = event_dict['raw_message']
+    raw_msg: str = unescape(event.raw_message)
+    user_id: int = event.user_id
+    group_id: int | None = event.dict().get('group_id', None)
 
     if lock[group_id] or TA[group_id].timeout:
         await ans_catcher.finish()
         return
 
     elif (
-        event.dict()["raw_message"].strip()
+        raw_msg.strip()
         in word[group_id]["name"].replace("～", "").split("/")
-        or event.dict()["raw_message"].strip() == word[group_id]["kanares"]
+        or raw_msg.strip() == word[group_id]["kanares"]
     ):
         lock[group_id] = True
         await ans_catcher.send(
@@ -272,7 +269,7 @@ async def ans_handle(bot: Bot, event: GroupMessageEvent, state: T_State):
         TA[group_id].begin_loop()
         # word_catcher
 
-    elif event.dict()["raw_message"].strip() in [
+    elif raw_msg.strip() in [
         "知らない",
         "しらない",
         "分からない",
@@ -295,7 +292,7 @@ async def ans_handle(bot: Bot, event: GroupMessageEvent, state: T_State):
         TA[group_id].begin_loop()
         # word_catcher
 
-    elif event.dict()["raw_message"].strip() in ["不背了", "停止背诵"]:
+    elif raw_msg.strip() in ["不背了", "停止背诵"]:
         lock[group_id] = True
         await ans_catcher.send("欢迎下次使用哦")
         TA[group_id].stop_loop()

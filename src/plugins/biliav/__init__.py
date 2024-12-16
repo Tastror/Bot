@@ -16,10 +16,9 @@ biliav = on_regex(reg)
 @biliav.handle()
 async def handle(bot: Bot, event: Event, state: T_State):
 
-    # event_dict = event.dict()
-    # group_id = event_dict.get('group_id', None)
-    # user_id = event.get_user_id()
-    # raw_msg = event_dict['raw_message']
+    # raw_msg: str = unescape(event.raw_message)
+    # user_id: int = event.user_id
+    # group_id: int | None = event.dict().get('group_id', None)
 
     raw_msg = unescape(event.get_plaintext())
 

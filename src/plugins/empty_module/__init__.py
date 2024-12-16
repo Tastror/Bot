@@ -15,7 +15,7 @@ your_plugin_catcher = on_regex(reg)
 async def _(bot: Bot, event: Event):
 
     raw_msg: str = unescape(event.raw_message)
-    user_id: int = event.get_user_id()
+    user_id: int = event.user_id
     group_id: int | None = event.dict().get('group_id', None)
 
     reg_find_list: list[tuple | str] = re.findall(reg, raw_msg)

@@ -26,7 +26,7 @@ your_plugin_catcher = on_regex(reg)
 async def _(bot: Bot, event: Event):
 
     raw_msg: str = unescape(event.raw_message)
-    user_id: int = event.get_user_id()
+    user_id: int = event.user_id
     group_id: int | None = event.dict().get('group_id', None)  # may not have get_group_id() attribute, so use this
 
     # raw_msg = unescape(str(event.get_message()))  # 和第一种一样, 图片等会显示成 [CQ:xxx] 形式

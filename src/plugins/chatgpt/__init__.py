@@ -30,10 +30,9 @@ history = dict()
 @gpt_catcher.handle()
 async def _(bot: Bot, event: Event):
 
-    event_dict = event.dict()
-    raw_msg = unescape(event_dict['raw_message'])
-    group_id = event_dict.get('group_id', None)
-    user_id = event.get_user_id()
+    raw_msg: str = unescape(event.raw_message)
+    user_id: int = event.user_id
+    group_id: int | None = event.dict().get('group_id', None)
 
     guid = ("g" + str(group_id)) if group_id is not None else ("u" + user_id)
 

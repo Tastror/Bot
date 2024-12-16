@@ -3,7 +3,7 @@ import datetime
 from nonebot.log import logger
 from nonebot.rule import startswith
 from nonebot import on_message, on_regex
-from nonebot.adapters.onebot.v11 import Bot, Event
+from nonebot.adapters.onebot.v11 import Bot, Event, unescape
 
 from .capture_context import get_random
 
@@ -15,10 +15,9 @@ today_dict = {}
 @your_plugin_catcher.handle()
 async def _(bot: Bot, event: Event):
 
-    # event_dict = event.dict()
-    # group_id = event_dict.get('group_id', None)
-    # user_id = event.get_user_id()
-    # raw_msg = event_dict['raw_message']
+    raw_msg: str = unescape(event.raw_message)
+    user_id: int = event.user_id
+    group_id: int | None = event.dict().get('group_id', None)
 
     raw_msg = str(event.get_message())
 

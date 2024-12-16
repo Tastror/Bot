@@ -19,7 +19,7 @@ from aiohttp import request
 from loguru import logger
 from nonebot import get_driver
 from nonebot.adapters import Bot, Event
-from nonebot.adapters.onebot.v11.event import GroupMessageEvent, MessageEvent, PrivateMessageEvent
+from nonebot.adapters.onebot.v11.event import GroupMessageEvent, MessageEvent, PrivateMessageEvent, unescape
 from nonebot_plugin_hammer_core.util.message_factory import reply_text
 from nonebot.exception import ActionFailed
 from nonebot.permission import Permission
@@ -79,10 +79,11 @@ async def getReqSign(params: dict) -> str:
 @fast_translate.handle()
 async def _(bot: Bot, event: Event, state: T_State):
 
-    # event_dict = event.dict()
-    # group_id: int = event_dict.get('group_id', 0)
-    source_text = event.get_plaintext().strip()
-    res_list = re.findall(r'^(?:翻译)\s*(zh|en|ja|ko|fr|es|it|de|tr|ru|pt|vi|id|th|ms|ar|hi|)(\s*)([\s\S]*)', source_text)[0]
+    plain_text = event.get_plaintext().strip()
+    user_id: int = event.user_id
+    group_id: int | None = event.dict().get('group_id', None)
+
+    res_list = re.findall(r'^(?:翻译)\s*(zh|en|ja|ko|fr|es|it|de|tr|ru|pt|vi|id|th|ms|ar|hi|)(\s*)([\s\S]*)', plain_text)[0]
     target_language: str = res_list[0]
     apart: str = res_list[1]
     source_text: str = res_list[2]
@@ -102,8 +103,7 @@ async def _(bot: Bot, event: Event, state: T_State):
 
 @slow_translate.handle()
 async def _(bot: Bot, event: Event, state: T_State):
-    event_dict = event.dict()
-    group_id: int = event_dict.get('group_id', 0)
+
     if isinstance(event, MessageEvent):
         available = [
             'auto',
@@ -174,7 +174,7 @@ async def _(bot: Bot, event: Event, state: T_State):
 async def _(bot: Bot, event: Event, state: T_State):
     if isinstance(event, MessageEvent):
         available = deepcopy(state['valid'])
-        state['Source'] = event.dict()['raw_message']
+        state['Source'] = unescape(event.raw_message)
         if state['Source'].lower() == 'jp':
             state['Source'] = 'ja'
         elif not state['Source'] in state['valid']:
@@ -228,7 +228,7 @@ async def _(bot: Bot, event: Event, state: T_State):
 @slow_translate.got('Target')
 async def _(bot: Bot, event: Event, state: T_State):
     if isinstance(event, MessageEvent):
-        state['Target'] = event.dict()['raw_message']
+        state['Target'] = unescape(event.raw_message)
         if state['Target'].lower() == 'jp':
             state['Target'] = 'ja'
         elif not state['Target'] in state['valid']:
@@ -257,7 +257,7 @@ async def _(bot: Bot, event: Event, state: T_State):
 @fast_translate.got('SourceText')
 async def go_trans(bot: Bot, event: Event, state: T_State):
     if isinstance(event, MessageEvent):
-        # state['SourceText'] = event.dict()['raw_message']
+        # state['SourceText'] = unescape(event.raw_message)
         endpoint = 'https://tmt.tencentcloudapi.com'
         params = {
             'Source': state['Source'],

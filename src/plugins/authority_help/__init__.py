@@ -26,9 +26,8 @@ from ..config.plugin_config import (
 @run_preprocessor
 async def _(matcher: Matcher, bot: Bot, event: Event):
 
-    event_dict = event.dict()
-    group_id = event_dict.get('group_id', None)
-    user_id = event.get_user_id()
+    user_id: int = event.user_id
+    group_id: int | None = event.dict().get('group_id', None)
 
     group_or_user_dict = { "group": group_id, "user": user_id }
 
@@ -69,10 +68,9 @@ authority_locker = on_message(
 @authority_locker.handle()
 async def _(bot: Bot, event: MessageEvent):
 
-    event_dict = event.dict()
-    raw_msg = unescape(event_dict['raw_message'])
-    group_id = event_dict.get('group_id', None)
-    user_id = event.get_user_id()
+    raw_msg: str = unescape(event.raw_message)
+    user_id: int = event.user_id
+    group_id: int | None = event.dict().get('group_id', None)
 
     group_or_user_dict = { "group": group_id, "user": user_id }
 
@@ -141,10 +139,9 @@ async def _(bot: Bot, event: MessageEvent):
     if not SuperUser():
         await config_modify_matcher.finish()
 
-    event_dict = event.dict()
-    group_id = event_dict.get('group_id', None)
-    user_id = event.get_user_id()
-    raw_msg = event_dict["raw_message"]
+    raw_msg: str = unescape(event.raw_message)
+    user_id: int = event.user_id
+    group_id: int | None = event.dict().get('group_id', None)
 
     group_or_user = "user" if group_id is None else "group"
     group_or_user_id = user_id if group_id is None else group_id

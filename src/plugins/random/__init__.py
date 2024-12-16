@@ -18,10 +18,9 @@ dies_matcher = on_regex(dies_reg)
 @dies_matcher.handle()
 async def _(bot: Bot, event: MessageEvent):
 
-    event_dict = event.dict()
-    raw_msg = unescape(event_dict['raw_message'])
-    group_id = event_dict.get('group_id', None)
-    user_id = event.get_user_id()
+    raw_msg: str = unescape(event.raw_message)
+    user_id: int = event.user_id
+    group_id: int | None = event.dict().get('group_id', None)
 
     content_list = list(re.findall(dies_reg, raw_msg))
     if len(content_list) == 0:
@@ -58,10 +57,9 @@ async def _(bot: Bot, event: MessageEvent):
 @random_matcher.handle()
 async def _(bot: Bot, event: MessageEvent):
 
-    event_dict = event.dict()
-    raw_msg = unescape(event_dict['raw_message'])
-    group_id = event_dict.get('group_id', None)
-    user_id = event.get_user_id()
+    raw_msg: str = unescape(event.raw_message)
+    user_id: int = event.user_id
+    group_id: int | None = event.dict().get('group_id', None)
 
     content_list = list(
         re.findall(random_reg, raw_msg)
