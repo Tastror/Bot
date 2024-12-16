@@ -5,9 +5,15 @@ from nonebot import on_message, on_regex
 from nonebot.adapters.onebot.v11 import Bot, Event, MessageEvent, unescape
 from nonebot_plugin_hammer_core.util.message_factory import reply_text
 
-# https://onebot.adapters.nonebot.dev/docs/api/v11/event/
-# https://github.com/botuniverse/onebot-11/blob/master/event/message.md
-# https://github.com/nonebot/adapter-onebot/blob/master/nonebot/adapters/onebot/v11/event.py
+# (1) onebot.v11 adapter for nonebot 官方页面
+#     https://onebot.adapters.nonebot.dev/docs/api/v11/event/
+# (2) onebot.v11 message API
+#     https://github.com/botuniverse/onebot-11/blob/master/event/message.md
+# (3) onebot.v11 adapter for nonebot source code
+#     https://github.com/nonebot/adapter-onebot/blob/master/nonebot/adapters/onebot/v11/event.py
+# (4) 注意，任何 adapters 的 Event 都继承自 BaseEvent，代码如下
+#     https://github.com/nonebot/nonebot2/blob/master/nonebot/internal/adapter/event.py
+#     由于 BaseEvent 使用了 pydantic 的 BaseModel，所以诸如 .dict(), .json(), class-field 直接转化为 object-field 等操作都是可行的
 
 # your_plugin_catcher = on_message(rule=startswith(("开头内容", "开头另一")))
 
