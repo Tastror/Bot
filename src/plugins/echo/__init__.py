@@ -8,7 +8,7 @@ echo_matcher = on_message(rule=startswith("echo"))
 @echo_matcher.handle()
 async def _(bot: Bot, event: MessageEvent):
 
-    esc_raw_msg: str = event.dict().get('raw_message')
+    esc_raw_msg: str = event.raw_message
     user_id: int = event.get_user_id()
     group_id: int | None = event.dict().get('group_id', None)
 

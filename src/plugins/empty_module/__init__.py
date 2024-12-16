@@ -14,7 +14,7 @@ your_plugin_catcher = on_regex(reg)
 @your_plugin_catcher.handle()
 async def _(bot: Bot, event: Event):
 
-    raw_msg: str = unescape(event.dict().get('raw_message'))
+    raw_msg: str = unescape(event.raw_message)
     user_id: int = event.get_user_id()
     group_id: int | None = event.dict().get('group_id', None)
 
