@@ -14,10 +14,9 @@ your_plugin_catcher = on_regex(reg)
 @your_plugin_catcher.handle()
 async def _(bot: Bot, event: Event):
 
-    event_dict: dict = event.dict()
-    raw_msg: str = unescape(event_dict['raw_message'])
-    group_id = event_dict.get('group_id', None)
-    user_id = event.get_user_id()
+    raw_msg: str = unescape(event.get_raw_message())
+    user_id: int = event.get_user_id()
+    group_id: int | None = event.dict().get('group_id', None)
 
     reg_find_list: list[tuple | str] = re.findall(reg, raw_msg)
     if not reg_find_list or len(reg_find_list) == 0:
