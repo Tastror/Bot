@@ -19,7 +19,7 @@ from aiohttp import request
 from loguru import logger
 from nonebot import get_driver
 from nonebot.adapters import Bot, Event
-from nonebot.adapters.onebot.v11.event import GroupMessageEvent, MessageEvent, PrivateMessageEvent, unescape
+from nonebot.adapters.onebot.v11 import unescape, GroupMessageEvent, MessageEvent, PrivateMessageEvent
 from nonebot_plugin_hammer_core.util.message_factory import reply_text
 from nonebot.exception import ActionFailed
 from nonebot.permission import Permission
