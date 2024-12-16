@@ -7,6 +7,7 @@ from nonebot_plugin_hammer_core.util.message_factory import reply_text
 
 # https://onebot.adapters.nonebot.dev/docs/api/v11/event/
 # https://github.com/botuniverse/onebot-11/blob/master/event/message.md
+# https://github.com/nonebot/adapter-onebot/blob/master/nonebot/adapters/onebot/v11/event.py
 
 # your_plugin_catcher = on_message(rule=startswith(("开头内容", "开头另一")))
 
@@ -18,7 +19,7 @@ your_plugin_catcher = on_regex(reg)
 @your_plugin_catcher.handle()
 async def _(bot: Bot, event: Event):
 
-    raw_msg: str = unescape(event.get_raw_message())
+    raw_msg: str = unescape(event.dict().get('raw_message'))
     user_id: int = event.get_user_id()
     group_id: int | None = event.dict().get('group_id', None)  # may not have get_group_id() attribute, so use this
 
