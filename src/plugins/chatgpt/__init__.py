@@ -34,9 +34,9 @@ async def _(bot: Bot, event: Event):
     user_id: int = event.user_id
     group_id: int | None = event.dict().get('group_id', None)
 
-    guid = ("g" + str(group_id)) if group_id is not None else ("u" + user_id)
+    guid = ("g" + str(group_id)) if group_id is not None else ("u" + str(user_id))
 
-    name_prefix = ("(message from qq=" + user_id + "): ") if group_id is not None else ""
+    name_prefix = (f"(message from qq={user_id}): ") if group_id is not None else ""
     history_prefix = ""
     history_used = False
 
