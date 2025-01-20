@@ -93,14 +93,12 @@ async def _(bot: Bot, event: Event):
         base_url=yaml_read['base_url'],
         timeout=httpx.Timeout(120.0)
     )
-
-    model_name = "gpt-4o"
     
     try:
         if history_used:
 
             completion = await client.chat.completions.create(
-                model=model_name,
+                model=yaml_read['model_name'],
                 messages=[
                     {"role": "system", "content": "" + ("You are now talking with many people." if group_id is not None else "")},
                     {"role": "user", "content": "history message (may be cut):\n\n" + history[guid] + "\n\ncurrent message:\n\n" + name_prefix + content}
@@ -110,7 +108,7 @@ async def _(bot: Bot, event: Event):
         else:
 
             completion = await client.chat.completions.create(
-                model=model_name,
+                model=yaml_read['model_name'],
                 messages=[
                     {"role": "user", "content": content}
                 ],
